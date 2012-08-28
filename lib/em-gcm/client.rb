@@ -34,7 +34,11 @@ module EventMachine
         verify_token
         @start = Time.now.to_f
 
+        params = {:dry_run => "true"}
+
         http = EventMachine::HttpRequest.new(URL).post(
+          #uncomment this if you want to test send and do not want receiver to receive message
+          #:query => params,
           :body => @notification.body,
           :head   => @notification.headers_json
         )
