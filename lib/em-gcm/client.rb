@@ -40,7 +40,7 @@ module EventMachine
         )
 
         http.callback do
-          response = Response.new(http, @start)
+          response = Response.new(http, @start, false)
           LogMessage.new(@notification, response).log
           block.call(response) if block
         end

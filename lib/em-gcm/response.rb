@@ -17,11 +17,12 @@ module EventMachine
       attr_accessor :status
       attr_accessor :duration
       attr_accessor :error
+      attr_accessor :body
 
       # Service-specific
       attr_accessor :retry_after
       
-      def initialize(http = {}, start = nil)
+      def initialize(http = {}, start = nil, is_plain = true)
         @http = http
         @duration = Time.now.to_f - start.to_f if start
         if http.kind_of?(Hash)
@@ -33,6 +34,7 @@ module EventMachine
           parse_body(http.response)
           parse_headers(http.response_header)
         end
+        @is_plain = is_plain
       end
 
       def success?
@@ -42,11 +44,15 @@ module EventMachine
       private
 
       def parse_body(body)
-        body =~ (/^id=(.*)$/)
-        @id = $1
+        if is_plain
+          body =~ (/^id=(.*)$/)
+          @id = $1
 
-        body =~ (/^Error=(.*)$/)
-        @error = $1
+          body =~ (/^Error=(.*)$/)
+          @error = $1
+        else
+          @body = body
+        end
       end
 
       # These are messed up because of EM::HttpRequest's messed up parsing
