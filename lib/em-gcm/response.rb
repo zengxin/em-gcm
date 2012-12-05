@@ -44,7 +44,7 @@ module EventMachine
       private
 
       def parse_body(body)
-        if is_plain
+        if @is_plain
           body =~ (/^id=(.*)$/)
           @id = $1
 
